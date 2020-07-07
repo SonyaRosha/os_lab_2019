@@ -27,8 +27,19 @@ int main(int argc, char **argv) {
   struct MinMax min_max = GetMinMax(array, 0, array_size);
   free(array);
 
+  FILE* fp;
+  fp = fopen("DataFiles/backgroundResult.txt", "w+");
+  if (fp) {
+      fprintf(fp, "min: %d\n", min_max.min);
+      fprintf(fp, "max: %d\n", min_max.max);
+      fclose(fp);
+  }
+
+  printf("--------------------- just sequential ---------------------\n");
   printf("min: %d\n", min_max.min);
   printf("max: %d\n", min_max.max);
+  printf("--------------------- ------------------- ---------------------\n");
+
 
   return 0;
 }
