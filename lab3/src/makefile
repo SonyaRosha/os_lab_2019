@@ -1,17 +1,24 @@
 CC=gcc
-CFLAGS=-I.
 
-sequential_min_max : utils.o find_min_max.o utils.h find_min_max.h
-	$(CC) -o sequential_min_max find_min_max.o utils.o sequential_min_max.c $(CFLAGS)
+all: sequential_min_max parallel_min_max EXECVL
 
-parallel_min_max : utils.o find_min_max.o utils.h find_min_max.h
-	$(CC) -o parallel_min_max utils.o find_min_max.o parallel_min_max.c $(CFLAGS)
+utils.o: utils.h
+	$(CC) -o utils.o -c -std=c99 utils.c
 
-utils.o : utils.h
-	$(CC) -o utils.o -c utils.c $(CFLAGS)
+find_min_max.o: utils.h find_min_max.h
+	$(CC) -o find_min_max.o -c -std=c99 find_min_max.c
 
-find_min_max.o : utils.h find_min_max.h
-	$(CC) -o find_min_max.o -c find_min_max.c $(CFLAGS)
+sequential_min_max: utils.h find_min_max.h utils.o find_min_max.o
+	$(CC) find_min_max.o utils.o sequential_min_max.c -o sequential_min_max 
 
-clean :
-	rm utils.o find_min_max.o sequential_min_max parallel_min_max
+parallel_min_max: utils.h find_min_max.h utils.o find_min_max.o
+	$(CC) utils.o find_min_max.o -std=c99 parallel_min_max.c -o parallel_min_max
+
+execvl.o:
+	$(CC) -c execvl.c -o execvl.o
+
+EXECVL: execvl.o
+	$(CC) execvl.o -o EXECVL
+
+clean:
+	rm *.o
